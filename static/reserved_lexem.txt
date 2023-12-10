@@ -1,0 +1,63 @@
+type 1
+class
+func
+private
+event
+operator
+public
+property
+return
+int
+string
+float
+bool
+operator
+List
+Func
+this
+type 4
+&
+.
++
+-
+*
++
+/
+**
+>>
+<<
+>
+>=
+<
+<=
+++
+--
+!
+=
+=
+<<=
+>>=
++=
+-=
+*=
+**=
+/=
+^=
+&=
+|=
+%=
+~
+type 5
+[
+]
+{
+}
+<
+>
+;
+->
+type 6
+,
+type 7
+(
+)
