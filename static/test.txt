@@ -1,19 +1,15 @@
+import math
+
+int a, b, c = 3;
+
 class Sample{
-    private event onAwake(int, int) -> string;
-	Sample(int x, int y, Func<int, int, string> f) {
+	Sample(int x, int y, List<int> f) {
 	    this.x = x;
 		this.y = y;
 		this.onAwake += f;
 	}
-	property int a {
-	    get => field;
-		set {field = value + 10;}
-	};
+	property int a;
 	public func get_max() -> List<int> {
         return this.onAwake(this.x, this.y);
-	}
-	operator+(int& x) -> int {
-		x = 5;
-		return 10;
 	}
 }
