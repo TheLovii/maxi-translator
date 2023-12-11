@@ -7,6 +7,7 @@
 #include <regex>
 #include "../utils/trie.h"
 #include "../utils/debug.h"
+
 class Lexical {
 public:
     explicit Lexical(const std::string& file_name) : debug("lexical"), position(0) {
