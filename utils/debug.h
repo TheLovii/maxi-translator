@@ -6,7 +6,7 @@
 class Debug {
 public:
     Debug() = delete;
-    explicit Debug(const std::string& s) : name(s), file("debug_" + s + ".txt", std::ios::app) {
+    explicit Debug(const std::string& s) : name(s), file("debug_" + s + ".txt", std::ios::out) {
         file << "Start debug " << name << '\n';
     }
     ~Debug() {
