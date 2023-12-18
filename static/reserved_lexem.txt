@@ -1,40 +1,17 @@
 type 1
 import
-class
-func
 private
-event
-operator
 public
-property
 return
-int
-string
-float
-bool
-operator
-List
-Func
 this
+EOF
+if
+elif
+else
+func
+class
+property
 type 4
-&
-.
-+
--
-*
-+
-/
-**
->>
-<<
->
->=
-<
-<=
-++
---
-!
-=
 =
 <<=
 >>=
@@ -47,8 +24,28 @@ type 4
 &=
 |=
 %=
-~
 type 5
+&
+.
++
+-
+*
++
+/
+%
+**
+>>
+<<
+>
+>=
+<
+<=
+==
+++
+--
+!
+~
+type 6
 [
 ]
 {
@@ -57,8 +54,16 @@ type 5
 >
 ;
 ->
-type 6
-,
 type 7
+,
+type 8
 (
 )
+type 9
+int
+float
+string
+char
+bool
+type 11
+"
