@@ -1,40 +1,41 @@
-<program> ::= <preprocessor> | <statements>
-<preprocessor> ::= {"import"<token>}
-<statements> ::= <statement> | <statement> <statements>
-<statement> ::= (<declaration>  | <expression> | <if> | <while> | <for> | <return> | <break> | <continue> | <function> | <class>) <endl>
+<program> ::= <preprocessor> <statements> "EOF"
+
+<preprocessor> ::= ("import"<token> <endl>)*
+<statements> ::= (<statement>)+
+<statement> ::= (<declaration>  | <expression> | <if> | <while> | <for> | <return> | <break> | <continue> | <function> | <class_s> | <print>) <endl>
 
 <declaration> ::= <declaration_token>
-<type>::="int"|"float"|"string"|"char"|"bool"|"func"|"class"
+<type>::="int"|"float"|"string"|"char"|"bool"
 <declaration_token>::=<type> <set_token>("," <set_token>)*
-<set_token> ::= <token> | <token> "=" <expression> | <generic_token> | <generic_token> "{" <initial_list> "}"
+<set_token> ::= <token> | <token> "=" <expression> | <generic_token> | <generic_token> <body_start> <initial_list> <body_end>
 <token>::=<char>(<char>|<number>)*
 <generic_token>::=<token>"<"(<token>|<generic_token>)*">"
 <initial_list> ::= <expression> | <expression> "," <initial_list>
 
-<if> ::= "if" "(" <expression> ")" "{" <statement> "}" | "if" "(" <expression> ")" "{" <statement> "}" "else" "{" <statement> "}"
-<while> ::= "while" "(" <expression> ")" "{" <statement> "}"
-<for> ::= "for" "(" <expression> ";" <expression> ";" <expression> ")" "{" <statement> "}"
+<if> ::= "if" "(" <expression> ")" <body_start> <statements> <body_end> (<elif>)* ("else" <body_start> <statements> <body_end>)?
+<elif> ::= "elif" "(" <expression> ")" <body_start> <statements> <body_end>
+<while> ::= "while" "(" <expression> ")" <body_start> <statements> <body_end>
+<for> ::= "for" "(" <declaration> ";" <expression> ";" <expression> ")" <body_start> <statements> <body_end>
 <return> ::= "return" <expression>
 <break> ::= "break"
 <continue> ::= "continue"
 
-<function> ::= "func" <token> "(" <arg_list> ")" "->" <type> "{" <statement> "}"
-<arg_list>::=<token>(","<token>)*
+<function> ::= "func" <token> "(" <arg_list> ")" "->" <type> <body_start> <statements> <body_end>
+<arg_list>::= <type> <token>(","<type> <token>)* | EMPTY
 
-
-<class> ::= "class" <token> "{" <class_statements> "}"
-<class_statements> ::= <class_statement> | <class_statement> <class_statements>
-<class_statement> ::= (<class_declaration> | <class_function> | <class_property>) <endl>
-<class_declaration> ::= <access_type> <declaration_token>
+<class_s> ::= "class" <token> <body_start> <class_statements> <body_end>
+<class_statements> ::= <class_statement> (";" <class_statement>)*
+<class_statement> ::= (<access_type> <declaration_token> | <access_type> <function> | <class_property>) <endl>
 <access_type> ::= "public"|"private"
-<class_function> ::= <access_type> <function>
-<class_property> ::= "property" <type> <token> <endl>
+<class_property> ::= "property" <type> <token>
+
+<print> ::= "print" "(" <expression> ")"
 
 
-<expression> ::= <assigment_expression> | <assigment_expression>","<expression>
+<expression> ::= <assigment_expression> (","<assigment_expression>)*
 <assigment_expression> ::= <logical_or> <assign_operator> <init_expression> | <logical_or>
 <init_expression> ::= <assigment_expression> | <init_list>
-<init_list> ::= "{" <init_list_seq> "}"
+<init_list> ::= <body_start> <init_list_seq> <body_end>
 <init_list_seq> ::= <expression> | <expression>","<init_list_seq>
 
 <logical_or> ::= <logical_and> "||" <logical_or> | <logical_and>
@@ -45,36 +46,33 @@
 <bit_and> ::= <equal_comparison> "&" <bit_and> | <equal_comparison>
 
 <equal_comparison> ::= <compare> ("==" | "!=") <equal_comparison> | <compare>
-<compare> ::= <bit_shift> (">" | ">=" | "<" | "<=") <compare> | <bit_shift>
+<compare> ::= <shift> (">" | ">=" | "<" | "<=") <compare> | <shift>
 
-<bit_shift> ::= <sum_sub> (">>" | "<<") <bit_shift> | <sum_sub>
+<shift> ::= <sum_sub> (">>" | "<<") <shift> | <sum_sub>
 
 <sum_sub> ::= <mul_div> <sign> <sum_sub> | <mul_div>
 
 <mul_div> ::= <power> ("/" | "*" | "%") <mul_div> | <power>
 
-<power> ::= <pointer> "**" <power> | <pointer>
+<power> ::= <unary> "**" <power> | <unary>
 
-<pointer> ::= <unary> "->" <pointer> | <unary>
+<unary> ::= ("+" | "-" | "~" | "!" | "++" | "--") <unary> | <postfix>
 
-<unary> ::= (<unary_operator> | "~" | <sign> | "&")  <unary> | <token_exp>
+<postfix> ::= <token_exp> ("++" | "--") | <token_exp>
 
-<token_exp> ::= <token> | <literal> | "("<expression> ")"
+<token_exp> ::= <token> "(" <expression> ")" | <literal> "(" <expression> ")" | "(" <expression> ")"
 
-<number>::="0-9"
 <char>::="a-z"|"A-Z"
+<digit>::="0-9"
 <sign>::="+"|"-"
 <endl>::=";"
+<body_start>::="{"
+<body_end>::="}"
 
+<literal>::=<number>|<string>|<boolean>
 <string>::="\""<char>*"\""
-<decimal_literal>::=<number>+
-<hex_literal>::="0x"(<number>|"a-z"|"A-Z")+
-<float_l>::=<decimal_literal>"."<decimal_literal>
-<int_l>::=(<decimal_literal>|<hex_literal>)+
-<literal>::=<int_l>|<float_l>|<string>
+<number>::=<digit>+"."<digit>*|<digit>+"."|<digit>+
+<boolean>::="true"|"false"
 
-
-
-<unary_operator>::="++"|"--"|"!"
 <binary_operator>::="*"|"+"|"/"|"**"|">>"|"<<"|">"|">="|"<"|"<="
 <assign_operator>::=[<binary_operator>]"="

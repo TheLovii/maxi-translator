@@ -1,15 +1,37 @@
-import math
+import math;
 
-int a, b, c = 3;
+int a,b,c=3;
+string a = "123";
+++a;
+
+int i = 0;
+while (i < 10) {
+    print(i);
+    i++;
+}; // bebrik
+// meow!!
+
+for (int i = 2; i <= 5050 ** 0.5; i++) {
+    if (num % i == 0) {
+        print("Not Prime");
+    };
+};
+
+if (a == 1) {
+    print("a");
+} elif (a == 2) {
+    print("b");
+} else {
+    print("c");
+};
 
 class Sample{
-	Sample(int x, int y, List<int> f) {
-	    this.x = x;
-		this.y = y;
-		this.onAwake += f;
-	}
-	property int a;
-	public func get_max() -> List<int> {
-        return this.onAwake(this.x, this.y);
-	}
-}
+    public func summary(int x, int y)->int {
+        return x+++y;
+    };
+
+	public func ReLU(int num) -> int {
+        return min(max(num, 0), 1);
+	};
+};
+EOF
