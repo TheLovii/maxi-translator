@@ -3,4 +3,4 @@ project(maxi_translator)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(maxi_translator main.cpp)
+add_executable(maxi_translator analyzers/syntax/syntax.cpp analyzers/lexical/lexical.cpp main.cpp)
