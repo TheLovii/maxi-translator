@@ -16,11 +16,11 @@ void Syntax::preprocessor() {
 }
 void Syntax::statements() {
     // <statements> ::= (<statement>)+
-    while (current_lex.first != "EOF" && current_lex.first != "}") { // TODO: исправить этот ужас
+    while (current_lex.first != "EOF" && current_lex.first != "}") {
         if (current_lex.first == "EOF")
             std::cout << "find" << '\n';
         statement();
-        endl(); // TODO: нахуй он ломается, ебанутый?
+        endl();
     }
 }
 void Syntax::statement() {
@@ -33,7 +33,7 @@ void Syntax::statement() {
         return_statement();
     else if (current_lex.first == "break") break_statement();
     else if (current_lex.first == "continue") continue_statement();
-    else if (current_lex.first == "function") function_statement();
+    else if (current_lex.first == "func") function_statement();
     else if (current_lex.first == "class")class_s();
     else if (current_lex.first == "print") print_statement();
     else expression();
@@ -44,10 +44,12 @@ void Syntax::declaration() {
     declaration_token();
 }
 void Syntax::type() {
-    // <type>::="int"|"float"|"string"|"char"|"bool"
+    // <type>::="int"|"float"|"string"|"char"|"bool" | <token>
     if (current_lex.second == 9) {
         current_lex = lexical.get_lex();
         return;
+    } else if (current_lex.second == 3) {
+        token();
     } else throw std::logic_error("Excepted type");
 }
 void Syntax::declaration_token() {
@@ -211,7 +213,7 @@ void Syntax::function_statement() {
 }
 void Syntax::arg_list() {
     // <arg_list>::= <type> <token>(","<type> <token>)* | EMPTY
-    if (current_lex.second == 9) {
+    if (current_lex.second == 9 || current_lex.second == 3) {
         type();
         token();
         while (current_lex.first == ",") {
