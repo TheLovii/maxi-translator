@@ -5,12 +5,14 @@
 std::pair<std::string, int> Lexical::get_lex() {
     std::pair<std::string, int> answer;
     if (line.empty()) throw std::logic_error("Line is empty");
-    if (position >= line.size()) throw std::logic_error("Position is out of range");
 
     debug.log("Start getting lex. Position: " + std::to_string(position));
+    int type = -1;
     std::string lex;
     bool read_literal = false, skip_checking = read_string_;
     words.reset_cursor();
+
+    if (position >= line.size()) lex = "EOF";
     while (position < line.size()) {
         char s = line[position];
         if (lex.empty() && is_tabulation(s)) {++position; continue;}
@@ -51,7 +53,10 @@ std::pair<std::string, int> Lexical::get_lex() {
             words.reset_cursor();
             if (tmp != -1 && words.check_next_move_to(s)) { // Checking: <lex><any_punctuation>
                 words.move_to(s);
-                if (words.get_cursor_type() != -1) break;
+                if (words.get_cursor_type() != -1) { // Save lex type
+                    type = tmp;
+                    break;
+                }
                 else words.reset_cursor();
             }
             else if (is_literal(lex)) {
@@ -83,6 +88,12 @@ std::pair<std::string, int> Lexical::get_lex() {
     } else if ((read_literal && is_literal(lex))) {
         debug.log("Lex: " + lex + " Type: 3");
         answer =  {lex, 3};
+    } else if (lex == "EOF") {
+        debug.log("Lex: " + lex + " Type: " + "12");
+        answer = {"EOF", 12};
+    } else if (type != -1) {
+        debug.log("Lex: " + lex + " Type: " + std::to_string(type));
+        answer =  {lex, type};
     } else if (words.get_cursor_type() != -1) {
         debug.log("Lex: " + lex + " Type: " + std::to_string(words.get_cursor_type()));
         answer = {lex, words.get_cursor_type()};

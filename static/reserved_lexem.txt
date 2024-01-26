@@ -4,12 +4,11 @@ private
 public
 return
 this
-EOF
 if
 elif
 else
 func
-class
+struct
 property
 type 4
 =
@@ -25,6 +24,7 @@ type 4
 |=
 %=
 type 5
+::
 &
 .
 +
@@ -65,5 +65,7 @@ float
 string
 char
 bool
+List
+Set
 type 11
 "

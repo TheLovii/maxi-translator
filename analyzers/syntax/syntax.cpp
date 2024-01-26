@@ -10,31 +10,29 @@ void Syntax::preprocessor() {
     // <preprocessor> ::= ("import"<token> <endl>)*
     while (current_lex.first == "import") {
         current_lex = lexical.get_lex();
-        token();
+        if (current_lex.second == 11) string();
+        else token();
         endl();
     }
 }
 void Syntax::statements() {
     // <statements> ::= (<statement>)+
     while (current_lex.first != "EOF" && current_lex.first != "}") {
-        if (current_lex.first == "EOF")
-            std::cout << "find" << '\n';
         statement();
         endl();
     }
 }
 void Syntax::statement() {
-    // <statement> ::= (<declaration>  | <expression> | <if> | <while> | <for> | <return> | <break> | <continue> | <function> | <class> | <print>) <endl>
+    // <statement> ::= (<declaration>  | <expression> | <if> | <while> | <for> | <return> | <break> | <continue> | <function> | <struct> | <print>) <endl>
     if (current_lex.second == 9) declaration();
     else if (current_lex.first == "if") if_statement();
     else if (current_lex.first == "while") while_statement();
     else if (current_lex.first == "for") for_statement();
-    else if (current_lex.first == "return")
-        return_statement();
+    else if (current_lex.first == "return") return_statement();
     else if (current_lex.first == "break") break_statement();
     else if (current_lex.first == "continue") continue_statement();
     else if (current_lex.first == "func") function_statement();
-    else if (current_lex.first == "class")class_s();
+    else if (current_lex.first == "struct") struct_s();
     else if (current_lex.first == "print") print_statement();
     else expression();
 }
@@ -42,15 +40,6 @@ void Syntax::statement() {
 void Syntax::declaration() {
     // <declaration> ::= <declaration_token>
     declaration_token();
-}
-void Syntax::type() {
-    // <type>::="int"|"float"|"string"|"char"|"bool" | <token>
-    if (current_lex.second == 9) {
-        current_lex = lexical.get_lex();
-        return;
-    } else if (current_lex.second == 3) {
-        token();
-    } else throw std::logic_error("Excepted type");
 }
 void Syntax::declaration_token() {
     // <declaration_token>::=<type> <set_token>("," <set_token>)*
@@ -61,47 +50,30 @@ void Syntax::declaration_token() {
         set_token();
     }
 }
+void Syntax::type() {
+    // <type>::="int"|"float"|"string"|"char"|"bool"| "List""<"<type>">" | "Set""<"<type>">" | <token>
+    if (current_lex.second == 9) {
+        if (current_lex.first == "List" || current_lex.first == "Set") {
+            current_lex = lexical.get_lex();
+            if (current_lex.first != "<") throw std::logic_error("Excepted <");
+            current_lex = lexical.get_lex();
+            type();
+            if (current_lex.first != ">") throw std::logic_error("Excepted >");
+            current_lex = lexical.get_lex();
+        } else current_lex = lexical.get_lex();
+    } else if (current_lex.second == 3) {
+        token();
+    } else throw std::logic_error("Excepted type");
+}
 void Syntax::set_token() {
-    // <set_token> ::= <token> | <token> "=" <expression> | <generic_token> | <generic_token> <body_start> <initial_list> <body_end>
-    token();
-    if (current_lex.first == "=") {
-        current_lex = lexical.get_lex();
-        expression();
-    } else if (current_lex.first == "<") {
-        generic_token();
-        if (current_lex.first == "{") {
-            current_lex = lexical.get_lex();
-            initial_list();
-            if (current_lex.first != "}") throw std::logic_error("Expected }");
-            current_lex = lexical.get_lex();
-        }
-    }
+    // <set_token> ::= <expression>
+    expression();
 }
 void Syntax::token() {
     // <token>::=<char>(<char>|<number>)*
     std::regex regex("[a-zA-Z_][a-zA-Z0-9_]*");
     if (!std::regex_match(current_lex.first, regex)) throw std::logic_error("Expected token");
     current_lex = lexical.get_lex();
-}
-void Syntax::generic_token() {
-    // <generic_token>::=<token>"<"(<token>|<generic_token>)*">"
-    token();
-    if (current_lex.first != "<") throw std::logic_error("Expected <");
-    current_lex = lexical.get_lex();
-    if (current_lex.first == ">") throw std::logic_error("Expected >");
-    while (current_lex.first != ">") {
-        if (current_lex.second == 9) generic_token();
-        else token();
-    }
-    current_lex = lexical.get_lex();
-}
-void Syntax::initial_list() {
-    // <initial_list>::=<expression>( "," <expression>)*
-    expression();
-    while (current_lex.first == ",") {
-        current_lex = lexical.get_lex();
-        expression();
-    }
 }
 
 void Syntax::if_statement() {
@@ -223,28 +195,44 @@ void Syntax::arg_list() {
         }
     }
 }
+void Syntax::call_arg_list() {
+    // <call_arg_list> ::= <assigment_expression>(","<assigment_expression>)* | EMPTY
+    if (current_lex.first != "(") throw std::logic_error("Expected (");
+    current_lex = lexical.get_lex();
+    if (current_lex.first == ")") {
+        current_lex = lexical.get_lex();
+        return;
+    }
+    assigment_expression();
+    while (current_lex.first == ",") {
+        current_lex = lexical.get_lex();
+        assigment_expression();
+    }
+    if (current_lex.first != ")") throw std::logic_error("Expected )");
+    current_lex = lexical.get_lex();
+}
 
-void Syntax::class_s() {
-    // <class_s> ::= "class" <token> <body_start> <class_statements> <body_end>
-    if (current_lex.first != "class") throw std::logic_error("Expected class");
+void Syntax::struct_s() {
+    // <struct_s> ::= "struct" <token> <body_start> <struct_statements> <body_end>
+    if (current_lex.first != "struct") throw std::logic_error("Expected struct");
     current_lex = lexical.get_lex();
     token();
     if (current_lex.first != "{") throw std::logic_error("Expected {");
     current_lex = lexical.get_lex();
-    class_statements();
+    struct_statements();
     if (current_lex.first != "}") throw std::logic_error("Expected }");
     current_lex = lexical.get_lex();
 }
-void Syntax::class_statements() {
-    // <class_statements> ::= <class_statement> (";" <class_statement>)*
-    class_statement();
+void Syntax::struct_statements() {
+    // <struct_statements> ::= <struct_statement> (";" <struct_statement>)*
+    struct_statement();
     while (current_lex.first == ";") {
         current_lex = lexical.get_lex();
-        class_statement();
+        struct_statement();
     }
 }
-void Syntax::class_statement() {
-    // <class_statement> ::= (<class_declaration> | <class_function> | <class_property>) <endl>
+void Syntax::struct_statement() {
+    // <struct_statement> ::= (<access_type> <declaration_token> | <access_type> <function> | <struct_property>) <endl>
     if (current_lex.first == "public" || current_lex.first == "private") {
         access_type();
         if (current_lex.first == "func") {
@@ -253,7 +241,7 @@ void Syntax::class_statement() {
             declaration_token();
         } else throw std::logic_error("Excepted statement");
     } else if (current_lex.first == "property") {
-        class_property();
+        struct_property();
     } else if (current_lex.first == "}") {
         return;
     } else throw std::logic_error("Excepted statement");
@@ -263,8 +251,8 @@ void Syntax::access_type() {
     if (current_lex.first != "public" && current_lex.first != "private") throw std::logic_error("Expected public or private");
     current_lex = lexical.get_lex();
 }
-void Syntax::class_property() {
-    // <class_property> ::= "property" <type> <token>
+void Syntax::struct_property() {
+    // <struct_property> ::= "property" <type> <token>
     if (current_lex.first != "property") throw std::logic_error("Expected property");
     current_lex = lexical.get_lex();
     type();
@@ -275,11 +263,7 @@ void Syntax::print_statement() {
     // <print> ::= "print" "(" <expression> ")" ";"
     if (current_lex.first != "print") throw std::logic_error("Expected print");
     current_lex = lexical.get_lex();
-    if (current_lex.first != "(") throw std::logic_error("Expected (");
-    current_lex = lexical.get_lex();
-    expression();
-    if (current_lex.first != ")") throw std::logic_error("Expected )");
-    current_lex = lexical.get_lex();
+    call_arg_list();
 }
 
 void Syntax::expression() {
@@ -311,15 +295,16 @@ void Syntax::init_list() {
     if (current_lex.first != "{") throw std::logic_error("Expected {");
     current_lex = lexical.get_lex();
     init_list_seq();
+    // c.check_push_type_operator("List");
     if (current_lex.first != "}") throw std::logic_error("Expected }");
     current_lex = lexical.get_lex();
 }
 void Syntax::init_list_seq() {
     // <init_list_seq> ::= <expression> ("," <expression>)*
-    expression();
+    assigment_expression();
     while (current_lex.first == ",") {
         current_lex = lexical.get_lex();
-        expression();
+        assigment_expression();
     }
 }
 void Syntax::logical_or() {
@@ -421,9 +406,26 @@ void Syntax::unary() {
 }
 void Syntax::postfix() {
     // <postfix> ::= <token_exp> ("++" | "--") | <token_exp>
-    token_exp();
-    if (current_lex.first == "++" || current_lex.first == "--")
+    point();
+    if (current_lex.first == "++" || current_lex.first == "--") {
         current_lex = lexical.get_lex();
+    }
+}
+void Syntax::point() {
+    // <point> ::= <token_exp> "." | <token_exp>
+    namespace_expression();
+    if (current_lex.first == ".") {
+        current_lex = lexical.get_lex();
+        point();
+    }
+}
+void Syntax::namespace_expression() {
+    // <namespace> ::= <token_exp> "::" | <token_exp>
+    token_exp();
+    if (current_lex.first == "::") {
+        current_lex = lexical.get_lex();
+        namespace_expression();
+    }
 }
 void Syntax::token_exp() {
     // <token_exp> ::= <token> | <literal> | <expression> ")"
@@ -439,10 +441,7 @@ void Syntax::token_exp() {
     } else if (current_lex.second == 3) {
         token();
         if (current_lex.first == "(") {
-            current_lex = lexical.get_lex();
-            expression();
-            if (current_lex.first != ")") throw std::logic_error("Expected )");
-            current_lex = lexical.get_lex();
+            call_arg_list();
         }
     } else if (current_lex.first == "(") {
         current_lex = lexical.get_lex();
@@ -490,7 +489,7 @@ void Syntax::number() {
     }
 }
 void Syntax::digit() {
-    if (current_lex.second != 3) throw std::logic_error("Expected digit");
+    for (char &s : current_lex.first) if (s < '0' || s > '9') throw std::logic_error("Expected digit");
     current_lex = lexical.get_lex();
 }
 void Syntax::endl() {
