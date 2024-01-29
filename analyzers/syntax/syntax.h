@@ -1,16 +1,14 @@
 #ifndef MAXI_TRANSLATOR_SYNTAX_H
 #define MAXI_TRANSLATOR_SYNTAX_H
-#include "../../utils/debug.h"
 #include "../lexical/lexical.h"
 #include "../semantic/semantic.h"
+#include "../../utils/debug.h"
 /*
  * TODO: проблемы с грамматикой: generic_token кривой
- * TODO: нет перегрузки операторов
- * TODO: property работают через жопу
  * TODO: доработать работу с Line
  * TODO: впринципе подумать над фичами и добавить что-то
- * TODO: разобраться с EOF
  * TODO: исправить грамматику в соответствии синтаксическому анализатору
+ * TODO: как вызывать функции?
  */
 class Syntax {
 public:
@@ -42,8 +40,6 @@ public:
     void declaration_token();
     void set_token();
     void token();
-    void generic_token();
-    void initial_list();
 
     void if_statement();
     void while_statement();
@@ -53,12 +49,13 @@ public:
     void continue_statement();
     void function_statement();
     void arg_list();
+    void call_arg_list();
 
-    void class_s();
-    void class_statements();
-    void class_statement();
+    void struct_s();
+    void struct_statements();
+    void struct_statement();
     void access_type();
-    void class_property();
+    void struct_property();
 
     void print_statement();
 
@@ -81,6 +78,8 @@ public:
     void power();
     void unary();
     void postfix();
+    void point();
+    void namespace_expression();
     void token_exp();
 
     void literal();

@@ -1,37 +1,45 @@
 import math;
 
-int a,b,c=3;
-string a = "123";
+func ok() -> string {
+    return "оу вей вей яяяяяя о вей вей яяяяяяя";
+};
+
+int a = 5;
+a += 444;
+B = ok(4+5, (a,b+7,c), f**5);
+
+k(k(k,k),k());
+
 ++a;
 
-int i = 0;
-while (i < 10) {
-    print(i);
-    i++;
-}; // bebrik
-// meow!!
+a++;
 
-for (int i = 2; i <= 5050 ** 0.5; i++) {
-    if (num % i == 0) {
-        print("Not Prime");
-    };
-};
-
-if (a == 1) {
-    print("a");
-} elif (a == 2) {
-    print("b");
+if (a == 5) {
+    print("aaaaa");
+} elif (a == 4) {
+    print("aaaa~~~~");
 } else {
-    print("c");
+    print("aaa");
 };
 
-class Sample{
-    public func summary(int x, int y)->int {
-        return x+++y;
+struct Node {
+    public int a;
+    private float b;
+
+    public func do(int k)->None {
+        print(k + a);
     };
-
-	public func ReLU(int num) -> int {
-        return min(max(num, 0), 1);
-	};
+    property int c;
 };
-EOF
+for (int i = 0; i < n; ++i) {
+    print("*", i);
+};
+
+while (true) {
+    print("true", Node.do());
+};
+
+List<int> list = {1,2,3,4,5,6,7,8,9,10};
+for (int i = 0; i < list.size(); ++i) {
+    print(list.get(i));
+};

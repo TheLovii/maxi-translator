@@ -14,6 +14,7 @@ type8 - скобки
 type9 - типы данных (int, float, string, char, bool)
 type10 - "содержимое"
 type11 - символ " (в связи с особенностями C++)
+type12 - EOF
 ```
 ### 2. [Lexical analyzer](analyzers/lexical/lexical.h)
 ### 3. [Syntax analyzer](analyzers/syntax/syntax.h)
