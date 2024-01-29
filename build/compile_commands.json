@@ -1,0 +1,17 @@
+[
+{
+  "directory": "D:/programming/ftl11-pracs/maxi/maxi-translator/build",
+  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\maxi_translator.dir\\analyzers\\syntax\\syntax.cpp.obj -c D:\\programming\\ftl11-pracs\\maxi\\maxi-translator\\analyzers\\syntax\\syntax.cpp",
+  "file": "D:/programming/ftl11-pracs/maxi/maxi-translator/analyzers/syntax/syntax.cpp"
+},
+{
+  "directory": "D:/programming/ftl11-pracs/maxi/maxi-translator/build",
+  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\maxi_translator.dir\\analyzers\\lexical\\lexical.cpp.obj -c D:\\programming\\ftl11-pracs\\maxi\\maxi-translator\\analyzers\\lexical\\lexical.cpp",
+  "file": "D:/programming/ftl11-pracs/maxi/maxi-translator/analyzers/lexical/lexical.cpp"
+},
+{
+  "directory": "D:/programming/ftl11-pracs/maxi/maxi-translator/build",
+  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\maxi_translator.dir\\main.cpp.obj -c D:\\programming\\ftl11-pracs\\maxi\\maxi-translator\\main.cpp",
+  "file": "D:/programming/ftl11-pracs/maxi/maxi-translator/main.cpp"
+}
+]
