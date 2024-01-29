@@ -210,6 +210,8 @@ void Syntax::function_statement() {
     statements();
     if (current_lex.first != "}") throw std::logic_error("Expected }");
     current_lex = lexical.get_lex();
+
+    
 }
 void Syntax::arg_list() {
     // <arg_list>::= <type> <token>(","<type> <token>)* | EMPTY

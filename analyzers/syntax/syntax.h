@@ -2,6 +2,7 @@
 #define MAXI_TRANSLATOR_SYNTAX_H
 #include "../../utils/debug.h"
 #include "../lexical/lexical.h"
+#include "../semantic/semantic.h"
 /*
  * TODO: проблемы с грамматикой: generic_token кривой
  * TODO: нет перегрузки операторов
@@ -13,7 +14,8 @@
  */
 class Syntax {
 public:
-    explicit Syntax(const std::string& file_name) : lexical(file_name), debug("syntax") {
+    explicit Syntax(const std::string& file_name) : lexical(file_name), debug("syntax"), semantic() {
+       std::cout << "A";
         debug.log("Success create syntax analyzer");
     }
     Syntax(const Syntax&) = delete;
@@ -90,6 +92,7 @@ public:
 private:
     Debug debug;
     Lexical lexical;
+    Semantic semantic;
     std::pair<std::string, int> current_lex;
 };
 #endif //MAXI_TRANSLATOR_SYNTAX_H
