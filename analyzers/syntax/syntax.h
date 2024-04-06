@@ -13,7 +13,6 @@
 class Syntax {
 public:
     explicit Syntax(const std::string& file_name) : lexical(file_name), debug("syntax"), semantic() {
-       std::cout << "A";
         debug.log("Success create syntax analyzer");
     }
     Syntax(const Syntax&) = delete;

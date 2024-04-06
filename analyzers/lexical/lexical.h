@@ -11,12 +11,13 @@ class Lexical {
 public:
     explicit Lexical(const std::string& file_name) : debug("lexical"), position(0), number_of_line(1) {
         words = Trie();
-        std::ifstream file("static/reserved_lexem.txt", std::ios::in);
+        std::ifstream file("static/reserved_lexem.txt");
 
         int type = 1;
         while (!file.eof()) {
             std::string word;
             file >> word;
+            
             if (word == "type") {
                 file >> type;
                 continue;

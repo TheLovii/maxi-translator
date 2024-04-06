@@ -5,18 +5,16 @@
 
 class Debug {
 public:
-    //Debug() = delete;
+    Debug() = delete;
     explicit Debug(const std::string& s) : name(s), file("../logs/debug_" + s + ".txt", std::ios::out) {
-        file << "asasas";
-        file << "Start debug " << name << '\n';
+        file << "Start debug " << name << std::endl;
 
         std::ofstream ostrm("../logs/debug_" + s + ".txt", std::ios::out);
-        ostrm << 123 ;                
     }
     ~Debug() {
         file.close();
     }
-    void log(const std::string& s) {file << s << '\n';}
+    void log(const std::string& s) {file << s << std::endl;}
 private:
     std::string name;
     std::ofstream file;
