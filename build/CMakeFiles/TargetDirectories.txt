@@ -1,3 +1,0 @@
-D:/programming/ftl11-pracs/maxi/maxi-translator/build/CMakeFiles/maxi_translator.dir
-D:/programming/ftl11-pracs/maxi/maxi-translator/build/CMakeFiles/edit_cache.dir
-D:/programming/ftl11-pracs/maxi/maxi-translator/build/CMakeFiles/rebuild_cache.dir
