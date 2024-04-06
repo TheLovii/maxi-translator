@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.23)
-project(maxi_translator)
+project(maxi-translator
+    VERSION 0.0.1
+    DESCRIPTION "Simple and beautiful translator for programm language"
+    LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
-add_executable(maxi_translator analyzers/syntax/syntax.cpp analyzers/lexical/lexical.cpp main.cpp)
+add_subdirectory(analyzers/syntax)
+add_subdirectory(analyzers/lexical)
+add_executable(main main.cpp)
+
+target_link_libraries(main PUBLIC lexical syntax)

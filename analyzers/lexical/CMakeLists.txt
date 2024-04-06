@@ -1,0 +1,1 @@
+add_library(lexical STATIC lexical.cpp)

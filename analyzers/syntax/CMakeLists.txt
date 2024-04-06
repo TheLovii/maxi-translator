@@ -1,0 +1,1 @@
+add_library(syntax STATIC syntax.cpp)
