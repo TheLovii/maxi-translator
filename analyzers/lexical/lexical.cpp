@@ -64,7 +64,7 @@ std::pair<std::string, int> Lexical::get_lex() {
                 continue;
             } else {
                 debug.log("BIG ERROR IN LEX ANALYZ! Check console!");
-                std::cout << "Lexical analyzer send a error on: " << lex;
+                std::cout << "Lexical analyzer send a error on: " << lex << std::endl;
                 exit(0);
             }
         }
@@ -99,7 +99,7 @@ std::pair<std::string, int> Lexical::get_lex() {
         answer = {lex, words.get_cursor_type()};
     } else {
         debug.log("BIG ERROR IN LEX ANALYZ! Check console!");
-        std::cout << "Lexical analyzer send a return error on: " << lex;
+        std::cout << "Lexical analyzer send a return error on: " << lex << std::endl;
         exit(0);
     }
     debug.log("End getting lex. Position: " + std::to_string(position));

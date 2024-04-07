@@ -6,10 +6,8 @@
 class Debug {
 public:
     Debug() = delete;
-    explicit Debug(const std::string& s) : name(s), file("../logs/debug_" + s + ".txt", std::ios::out) {
+    explicit Debug(const std::string& s) : name(s), file("../logs/debug_" + s + ".txt") {
         file << "Start debug " << name << std::endl;
-
-        std::ofstream ostrm("../logs/debug_" + s + ".txt", std::ios::out);
     }
     ~Debug() {
         file.close();
