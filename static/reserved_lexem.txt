@@ -1,15 +1,14 @@
 type 1
-import
+true
+false
 private
 public
 return
-this
 if
 elif
 else
 func
 struct
-property
 type 4
 =
 <<=
@@ -65,7 +64,5 @@ float
 string
 char
 bool
-List
-Set
 type 11
 "

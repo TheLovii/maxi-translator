@@ -1,20 +1,19 @@
-<program> ::= <preprocessor> <statements> "EOF"
+<program> ::= <statements> "EOF"
 
-<preprocessor> ::= ("import"(<token>|<string>) <endl>)*
 <statements> ::= (<statement>)+
 <statement> ::= (<declaration>  | <expression> | <if> | <while> | <for> | <return> | <break> | <continue> | <function> | <struct_s> | <print>) <endl>
 
 <declaration> ::= <declaration_token>
-<declaration_token>::=<type> <set_token>("," <set_token>)*
-<type>::="int"|"float"|"string"|"char"|"bool"| "List""<"<type>">" | "Set""<"<type>">" | <token>
-<set_token> ::= <token> | <token> "=" <expression>
+<declaration_token>::=<type> <set_token> push_id()("," <set_token> push_id())*
+<type>::="int"|"float"|"string"|"char"|"bool" | <token>
+<set_token> ::= <token> | <token> "=" <assigment_expression>
 <token>::=<char>(<char>|<number>)*
 
-<if> ::= "if" "(" <expression> ")" <body_start> <statements> <body_end> (<elif>)* ("else" <body_start> <statements> <body_end>)?
-<elif> ::= "elif" "(" <expression> ")" <body_start> <statements> <body_end>
-<while> ::= "while" "(" <expression> ")" <body_start> <statements> <body_end>
-<for> ::= "for" "(" <declaration> ";" <expression> ";" <expression> ")" <body_start> <statements> <body_end>
-<return> ::= "return" <expression>
+<if> ::= "if" "(" <expression> ")" tid::create_node() <body_start> <statements> <body_end> tid::delete_node() (<elif>)* ("else" tid::create_node() <body_start> <statements> <body_end> tid::delete_node())?
+<elif> ::= "elif" "(" <expression> ")" tid::create_node() <body_start> <statements> <body_end> tid::delete_node()
+<while> ::= "while" "(" <expression> ")" tid::create_node() <body_start> <statements> <body_end> tid::delete_node()
+<for> ::= "for" tid::create_node() "(" <declaration> ";" <expression> ";" <expression> ")" <body_start> <statements> <body_end> tid::delete_node()
+<return> ::= "return" <assigment_expression>
 <break> ::= "break"
 <continue> ::= "continue"
 
@@ -31,43 +30,37 @@
 <print> ::= "print" "(" <call_arg_list> ")"
 
 
-<expression> ::= <assigment_expression> (","<assigment_expression>)*
-<assigment_expression> ::= <logical_or> <assign_operator> <init_expression> | <logical_or>
-<init_expression> ::= <assigment_expression> | <init_list>
-<init_list> ::= <body_start> <init_list_seq> <body_end>
-<init_list_seq> ::= <assigment_expression> | <assigment_expression>","<init_list_seq>
+<expression> ::= <assigment_expression> (","<assigment_expression>)* stack_clear()
+<assigment_expression> ::= <logical_or> <assign_operator> <assigment_expression> | <logical_or>
 
-<logical_or> ::= <logical_and> "||" <logical_or> | <logical_and>
-<logical_and> ::= <bit_or> "&&" <logical_and> | <bit_or>
+<logical_or> ::= <logical_and> "||" push_type_op() <logical_or> check_bin() | <logical_and>
+<logical_and> ::= <bit_or> "&&" push_type_op() <logical_and> check_bin() | <bit_or>
 
-<bit_or> ::= <bit_xor> "|" <bit_or> | <bit_xor>
-<bit_xor> ::= <bit_and> "^" <bit_xor> | <bit_and>
-<bit_and> ::= <equal_comparison> "&" <bit_and> | <equal_comparison>
+<bit_or> ::= <bit_xor> "|" push_type_op() <bit_or> check_bin() | <bit_xor>
+<bit_xor> ::= <bit_and> "^" push_type_op() <bit_xor> check_bin() | <bit_and>
+<bit_and> ::= <equal_comparison> "&" push_type_op() <bit_and> check_bin() | <equal_comparison>
 
-<equal_comparison> ::= <compare> ("==" | "!=") <equal_comparison> | <compare>
-<compare> ::= <shift> (">" | ">=" | "<" | "<=") <compare> | <shift>
+<equal_comparison> ::= <compare> ("==" | "!=") push_type_op() <equal_comparison> check_bin() | <compare>
+<compare> ::= <shift> (">" | ">=" | "<" | "<=") push_type_op() <compare> check_bin() | <shift>
 
-<shift> ::= <sum_sub> (">>" | "<<") <shift> | <sum_sub>
+<shift> ::= <addition> (">>" | "<<") push_type_op() <shift> check_bin() | <addition>
 
-<sum_sub> ::= <mul_div> <sign> <sum_sub> | <mul_div>
+<addition> ::= <multiplication> ("+" | "-") push_type_op() <addition> check_bin() | <multiplication>
 
-<mul_div> ::= <power> ("/" | "*" | "%") <mul_div> | <power>
+<multiplication> ::= <power> ("/" | "*" | "%") push_type_op() <multiplication> check_bin() | <power>
 
-<power> ::= <unary> "**" <power> | <unary>
+<power> ::= <unary> "**" push_type_op() <power> check_bin() | <unary>
 
-<unary> ::= ("+" | "-" | "~" | "!" | "++" | "--") <unary> | <postfix>
+<unary> ::= ("+" | "-" | "~" | "!" | "++" | "--") push_type_op() <unary> check_uno() | <postfix>
 
-<postfix> ::= <point> ("++" | "--")  | <point>
+<postfix> ::= <point_call> ("++" | "--") push_type_op() check_postfix() | <point_call>
 
-<point> ::= <namespace> "." <point> | <namespace>
+<point_call> ::= <token_exp> "." push_type_op() <point_call> check_bin() | <token_exp> "(" <call_arg_list> ")" check_call_function() | <token_exp>
 
-<namespace> ::= <token_exp> "::" <namespace> | <token_exp>
-
-<token_exp> ::= <token> "(" <call_arg_list> ")" | <literal> "(" <expression> ")" | "(" <expression> ")"
+<token_exp> ::= <token> push_type_op() | <literal> push_type_op() "(" <expression> ")" | "(" <expression> ")"
 
 <char>::="a-z"|"A-Z"
 <digit>::="0-9"
-<sign>::="+"|"-"
 <endl>::=";"
 <body_start>::="{"
 <body_end>::="}"

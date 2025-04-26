@@ -29,7 +29,6 @@ struct Node {
     public func do(int k)->None {
         print(k + a);
     };
-    property int c;
 };
 for (int i = 0; i < n; ++i) {
     print("*", i);

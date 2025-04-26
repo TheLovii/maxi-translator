@@ -5,10 +5,7 @@
 #include "../../utils/debug.h"
 /*
  * TODO: проблемы с грамматикой: generic_token кривой
- * TODO: доработать работу с Line
- * TODO: впринципе подумать над фичами и добавить что-то
  * TODO: исправить грамматику в соответствии синтаксическому анализатору
- * TODO: как вызывать функции?
  */
 class Syntax {
 public:
@@ -24,7 +21,7 @@ public:
             program();
         } catch (std::logic_error &e) {
             debug.log(e.what());
-            std::cout << "Drop error. See debug_syntax.txt\n";
+            std::cout << "Drop error: " << e.what() << std::endl << "See debug files.\n" << std::endl;
         }
         debug.log("Success analyze");
     }
@@ -54,15 +51,11 @@ public:
     void struct_statements();
     void struct_statement();
     void access_type();
-    void struct_property();
 
     void print_statement();
 
-    void expression();
+    void expression(bool end_clear_stack = true);
     void assigment_expression();
-    void init_expression();
-    void init_list();
-    void init_list_seq();
     void logical_or();
     void logical_and();
 
@@ -78,7 +71,6 @@ public:
     void unary();
     void postfix();
     void point();
-    void namespace_expression();
     void token_exp();
 
     void literal();
